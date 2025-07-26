@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class Card : MonoBehaviour
 {
     [Header("Card Settings")]
+    public int cardIndex;
     public int cardId;
     public Sprite cardFront;
     public Sprite cardBack;
@@ -128,8 +129,10 @@ public class Card : MonoBehaviour
         cardImage.color = Color.white;
         transform.localScale = Vector3.one;
     }
-    
+
     public int GetCardId() => cardId;
+    public bool IsFlipped() => isFlipped;
+    public bool IsMatched() => isMatched;
 }
 
 //TODO : Remove Helper ContextMenu

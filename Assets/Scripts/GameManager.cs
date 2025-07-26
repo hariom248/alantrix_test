@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -9,89 +7,62 @@ public class GameManager : MonoBehaviour
     public int gridWidth = 4;
     public int gridHeight = 4;
 
-    [Header("Card and Sprites Setup")]
-    public GameObject cardPrefab;
-    public GameObject cardParent;
-    public Sprite[] cardSprites;
-
-    [Header("UI References")]
-    public Text scoreText;
-    public Text movesText;
-
-    public Text comboText;
-
-    [Header("Game State")]
-    public int score = 0;
-    public int moves = 0;
-    public int matchedPairs = 0;
-    public int comboMultiplier = 0;
-
-    private List<Card> allCards = new List<Card>();
-
     private Card lastFlippedCard = null;
 
     private int totalPairs;
 
+    private GameDataManager dataManager;
+    public CardSpawner cardSpawner;
+    public UIController uiController;
+
+    void Awake()
+    {
+         dataManager = new GameDataManager();
+    }
+
     void Start()
     {
-        InitializeGame();
+        if (dataManager.TryLoad(out GameSaveData data))
+            LoadGame(data);
+        else
+            StartNewGame();
     }
 
-    void InitializeGame()
+    [ContextMenu("Initialize Game")]
+    public void StartNewGame()
     {
-        totalPairs = gridWidth * gridHeight / 2;
-        CreateCardGrid();
+        cardSpawner.GenerateBoard(gridWidth, gridHeight, OnCardClicked);
+        uiController.ResetUI();
     }
 
-    void CreateCardGrid()
+    [ContextMenu("Reset Data")]
+    public void ResetData()
     {
-        RectTransform parentRect = cardParent.GetComponent<RectTransform>();
+        dataManager.ClearSave();
+    }
 
-        float spacing = 10f;
+    [ContextMenu("Load Game")]
+    public void LoadGame(GameSaveData data)
+    {
+        cardSpawner.LoadFromSave(data, OnCardClicked);
+        uiController.LoadUI(data);
+    }
 
-        // Get current available size
-        float availableWidth = parentRect.rect.width;
-        float availableHeight = parentRect.rect.height;
-
-        // Compute max square card size that fits
-        float maxCardWidth = (availableWidth - spacing * (gridWidth - 1)) / gridWidth;
-        float maxCardHeight = (availableHeight - spacing * (gridHeight - 1)) / gridHeight;
-        float cardSize = Mathf.Min(maxCardWidth, maxCardHeight); // Square cards
-
-        // Resize the parent to fit just the grid
-        float targetWidth = cardSize * gridWidth + spacing * (gridWidth - 1);
-        float targetHeight = cardSize * gridHeight + spacing * (gridHeight - 1);
-        parentRect.sizeDelta = new Vector2(targetWidth, targetHeight);
-
-        // Centering offsets
-        float startX = -targetWidth / 2f + cardSize / 2f;
-        float startY = targetHeight / 2f - cardSize / 2f;
-
-        int cardIndex = 0;
-        allCards.Clear();
-        for (int y = 0; y < gridHeight; y++)
+    [ContextMenu("Save Game")]
+    public void SaveGame()
+    {
+        var saveData = new GameSaveData
         {
-            for (int x = 0; x < gridWidth; x++)
-            {
-                GameObject cardObj = Instantiate(cardPrefab, cardParent.transform);
-                RectTransform cardRect = cardObj.GetComponent<RectTransform>();
+            gridWidth = cardSpawner.GridWidth,
+            gridHeight = cardSpawner.GridHeight,
+            cardStates = cardSpawner.GetCardStates(),
+            score = uiController.Score,
+            moves = uiController.Moves,
+            matchedPairs = uiController.MatchedPairs,
+            comboMultiplier = uiController.ComboMultiplier
+        };
 
-                cardRect.sizeDelta = new Vector2(cardSize, cardSize);
-
-                cardRect.anchoredPosition = new Vector2(
-                    startX + x * (cardSize + spacing),
-                    startY - y * (cardSize + spacing)
-                );
-
-                Card card = cardObj.GetComponent<Card>();
-                card.cardButton.onClick.AddListener(() => OnCardClicked(card));
-                card.cardFront = cardSprites[cardIndex / 2];
-                card.cardId = cardIndex / 2;
-                allCards.Add(card);
-
-                cardIndex++;
-            }
-        }
+        dataManager.Save(saveData);
     }
 
     public void OnCardClicked(Card card)
@@ -106,8 +77,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            moves++;
-            UpdateMovesDisplay();
+            uiController.RegisterMove();
 
             // Copy to local vars to avoid race conditions
             Card first = lastFlippedCard;
@@ -126,17 +96,9 @@ public class GameManager : MonoBehaviour
         {
             card1.SetMatched();
             card2.SetMatched();
-            matchedPairs++;
-           
-            int comboBonus = comboMultiplier * 50;
-            score += 100 + comboBonus;
+            uiController.RegisterMatch();
 
-            comboMultiplier++; // starts increasing from 2nd match
-
-            UpdateScoreDisplay();
-            UpdateComboDisplay();
-
-            if (matchedPairs >= totalPairs)
+            if (uiController.MatchedPairs >= totalPairs)
             {
                 yield return new WaitForSeconds(1f);
                 Debug.Log("Game Complete");
@@ -144,26 +106,10 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            comboMultiplier = 0;
-            UpdateComboDisplay();
+            uiController.RegisterMismatch();
 
             card1.FlipCard();
             card2.FlipCard();
         }
     }
-
-    void UpdateScoreDisplay()
-    {
-        scoreText.text = score.ToString();
-    }
-
-    void UpdateMovesDisplay()
-    {
-        movesText.text = moves.ToString();
-    }
-    
-    void UpdateComboDisplay()
-    {
-        comboText.text = "x" + comboMultiplier;
-    }
-} 
+}
