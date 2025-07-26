@@ -19,6 +19,24 @@ public class CardSpawner : MonoBehaviour
     public int GridWidth => gridWidth;
     public int GridHeight => gridHeight;
 
+    private int availableWidth;
+    private int availableHeight;
+
+    private void Start()
+    {
+        RectTransform parentRect = cardParent.GetComponent<RectTransform>();
+
+        availableWidth = (int) parentRect.rect.width;
+        availableHeight = (int) parentRect.rect.height;
+
+        parentRect.anchorMin = new Vector2(0.5f, 0.5f);
+        parentRect.anchorMax = new Vector2(0.5f, 0.5f);
+        parentRect.pivot = new Vector2(0.5f, 0.5f);
+
+        parentRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, availableWidth);
+        parentRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, availableHeight);
+    }
+
     public void GenerateBoard(int width, int height, Action<Card> OnCardClick)
     {
         ClearBoard();
@@ -28,13 +46,6 @@ public class CardSpawner : MonoBehaviour
         int totalCards = gridWidth * gridHeight;
 
         RectTransform parentRect = cardParent.GetComponent<RectTransform>();
-
-        parentRect.anchorMin = new Vector2(0, 0);
-        parentRect.anchorMax = new Vector2(1, 1);
-
-        // Get current available size
-        float availableWidth = parentRect.rect.width;
-        float availableHeight = parentRect.rect.height;
 
         // Compute max square card size that fits
         float cardSize = Mathf.Min(
