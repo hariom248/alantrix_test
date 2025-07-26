@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     private GameDataManager dataManager;
     public CardSpawner cardSpawner;
     public UIController uiController;
+    public AudioManager audioManager;
 
     void Awake()
     {
@@ -67,6 +68,8 @@ public class GameManager : MonoBehaviour
     {
         if (!card.CanClick()) return;
 
+        audioManager.PlayCardFlipSound();
+
         card.FlipCard();
 
         if (lastFlippedCard == null)
@@ -95,16 +98,19 @@ public class GameManager : MonoBehaviour
             card1.SetMatched();
             card2.SetMatched();
             uiController.RegisterMatch();
+            audioManager.PlayCardMatchSound();
 
             if (uiController.IsGameComplete())
             {
                 yield return new WaitForSeconds(1f);
+                audioManager.PlayGameCompleteSound();
                 Debug.Log("Game Complete");
             }
         }
         else
         {
             uiController.RegisterMismatch();
+            audioManager.PlayCardMismatchSound();
 
             card1.FlipCard();
             card2.FlipCard();
