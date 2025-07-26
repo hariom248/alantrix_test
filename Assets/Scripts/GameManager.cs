@@ -18,10 +18,13 @@ public class GameManager : MonoBehaviour
     public Text scoreText;
     public Text movesText;
 
+    public Text comboText;
+
     [Header("Game State")]
     public int score = 0;
     public int moves = 0;
     public int matchedPairs = 0;
+    public int comboMultiplier = 0;
 
     private List<Card> allCards = new List<Card>();
 
@@ -124,8 +127,14 @@ public class GameManager : MonoBehaviour
             card1.SetMatched();
             card2.SetMatched();
             matchedPairs++;
-            score += 100;
+           
+            int comboBonus = comboMultiplier * 50;
+            score += 100 + comboBonus;
+
+            comboMultiplier++; // starts increasing from 2nd match
+
             UpdateScoreDisplay();
+            UpdateComboDisplay();
 
             if (matchedPairs >= totalPairs)
             {
@@ -135,18 +144,26 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            comboMultiplier = 0;
+            UpdateComboDisplay();
+
             card1.FlipCard();
             card2.FlipCard();
         }
     }
-    
+
     void UpdateScoreDisplay()
     {
-       scoreText.text = score.ToString();
+        scoreText.text = score.ToString();
     }
-    
+
     void UpdateMovesDisplay()
     {
-         movesText.text = moves.ToString();
+        movesText.text = moves.ToString();
+    }
+    
+    void UpdateComboDisplay()
+    {
+        comboText.text = "x" + comboMultiplier;
     }
 } 
