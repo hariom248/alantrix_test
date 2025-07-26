@@ -17,13 +17,15 @@ public class UIController : MonoBehaviour
     public int MatchedPairs { get; private set; }
     public int ComboMultiplier { get; private set; } = 0;
 
+    private int totalPairs;
 
-    public void ResetUI()
+    public void Init(int gridWidth, int gridHeight)
     {
         Score = 0;
         Moves = 0;
         MatchedPairs = 0;
         ComboMultiplier = 0;
+        totalPairs = gridWidth * gridHeight / 2;
 
         UpdateUI();
     }
@@ -34,6 +36,7 @@ public class UIController : MonoBehaviour
         Moves = data.moves;
         MatchedPairs = data.matchedPairs;
         ComboMultiplier = data.comboMultiplier;
+        totalPairs = data.gridWidth * data.gridHeight / 2;
 
         UpdateUI();
     }
@@ -59,6 +62,11 @@ public class UIController : MonoBehaviour
     {
         ComboMultiplier = 0;
         UpdateUI();
+    }
+
+    public bool IsGameComplete()
+    {
+        return MatchedPairs == totalPairs;
     }
 
     private void UpdateUI()

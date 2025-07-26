@@ -9,8 +9,6 @@ public class GameManager : MonoBehaviour
 
     private Card lastFlippedCard = null;
 
-    private int totalPairs;
-
     private GameDataManager dataManager;
     public CardSpawner cardSpawner;
     public UIController uiController;
@@ -32,7 +30,7 @@ public class GameManager : MonoBehaviour
     public void StartNewGame()
     {
         cardSpawner.GenerateBoard(gridWidth, gridHeight, OnCardClicked);
-        uiController.ResetUI();
+        uiController.Init(gridWidth, gridHeight);
     }
 
     [ContextMenu("Reset Data")]
@@ -98,7 +96,7 @@ public class GameManager : MonoBehaviour
             card2.SetMatched();
             uiController.RegisterMatch();
 
-            if (uiController.MatchedPairs >= totalPairs)
+            if (uiController.IsGameComplete())
             {
                 yield return new WaitForSeconds(1f);
                 Debug.Log("Game Complete");
