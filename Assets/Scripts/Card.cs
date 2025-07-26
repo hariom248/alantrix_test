@@ -139,6 +139,8 @@ public class Card : MonoBehaviour
         cardImage.color = Color.white;
         transform.localScale = Vector3.one;
     }
+    
+    public int GetCardId() => cardId;
 }
 
 //TODO : Remove Helper ContextMenu
