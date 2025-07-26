@@ -143,6 +143,12 @@ public class CardSpawner : MonoBehaviour
             Card card = obj.GetComponent<Card>();
             card.cardId = state.cardId;
             card.cardButton.onClick.AddListener(() => OnCardClick(card));
+            card.cardIndex = i;
+            if (cardSprites != null && cardSprites.Length > state.cardId)
+            {
+                card.cardFront = cardSprites[state.cardId];
+            }
+            allCards.Add(card);
             if (state.isFlipped)
             {
                 card.FlipCard();
@@ -151,12 +157,6 @@ public class CardSpawner : MonoBehaviour
             {
                 card.SetMatched();
             }
-            card.cardIndex = i;
-            if (cardSprites != null && cardSprites.Length > state.cardId)
-            {
-                card.cardFront = cardSprites[state.cardId];
-            }
-            allCards.Add(card);
         }
     }
 
