@@ -1,29 +1,38 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     [Header("Game Settings")]
     public int gridWidth = 4;
     public int gridHeight = 4;
-    
+
     [Header("Card and Sprites Setup")]
     public GameObject cardPrefab;
     public GameObject cardParent;
     public Sprite[] cardSprites;
-    
+
+    [Header("UI References")]
+    public Text scoreText;
+    public Text movesText;
+
+    [Header("Game State")]
+    public int score = 0;
+    public int moves = 0;
+    public int matchedPairs = 0;
+
     private List<Card> allCards = new List<Card>();
     private List<Card> flippedCards = new List<Card>();
-    
+
     private int totalPairs;
-    private int matchedPairs;
 
     void Start()
     {
         InitializeGame();
     }
-    
+
     void InitializeGame()
     {
         totalPairs = gridWidth * gridHeight / 2;
@@ -72,7 +81,7 @@ public class GameManager : MonoBehaviour
 
                 Card card = cardObj.GetComponent<Card>();
                 card.cardButton.onClick.AddListener(() => OnCardClicked(card));
-                card.cardFront = cardSprites[cardIndex / 2];  
+                card.cardFront = cardSprites[cardIndex / 2];
                 card.cardId = cardIndex / 2;
                 allCards.Add(card);
 
@@ -80,35 +89,39 @@ public class GameManager : MonoBehaviour
             }
         }
     }
-    
+
     public void OnCardClicked(Card card)
     {
         if (!card.CanClick()) return;
         // Add card to flipped list
         card.FlipCard();
         flippedCards.Add(card);
-        
+
         // Check if we have two cards flipped
         if (flippedCards.Count == 2)
         {
+            moves++;
+            UpdateMovesDisplay();
             StartCoroutine(CheckForMatch());
         }
     }
-    
+
     private IEnumerator CheckForMatch()
     {
         // Wait a moment for player to see both cards
         yield return new WaitForSeconds(1f);
-        
+
         Card card1 = flippedCards[0];
         Card card2 = flippedCards[1];
-        
+
         if (card1.GetCardId() == card2.GetCardId())
         {
             // Match found!
             card1.SetMatched();
             card2.SetMatched();
             matchedPairs++;
+            score += 100;
+            UpdateScoreDisplay();
 
             // Check if game is complete
             if (matchedPairs >= totalPairs)
@@ -122,9 +135,19 @@ public class GameManager : MonoBehaviour
             // No match, flip cards back
             card1.FlipCard();
             card2.FlipCard();
-            
+
         }
-        
+
         flippedCards.Clear();
+    }
+    
+    void UpdateScoreDisplay()
+    {
+       scoreText.text = score.ToString();
+    }
+    
+    void UpdateMovesDisplay()
+    {
+         movesText.text = moves.ToString();
     }
 } 
