@@ -29,6 +29,9 @@ public class CardSpawner : MonoBehaviour
 
         RectTransform parentRect = cardParent.GetComponent<RectTransform>();
 
+        parentRect.anchorMin = new Vector2(0, 0);
+        parentRect.anchorMax = new Vector2(1, 1);
+
         // Get current available size
         float availableWidth = parentRect.rect.width;
         float availableHeight = parentRect.rect.height;
