@@ -24,7 +24,8 @@ public class GameManager : MonoBehaviour
     public int matchedPairs = 0;
 
     private List<Card> allCards = new List<Card>();
-    private List<Card> flippedCards = new List<Card>();
+
+    private Card lastFlippedCard = null;
 
     private int totalPairs;
 
@@ -93,37 +94,39 @@ public class GameManager : MonoBehaviour
     public void OnCardClicked(Card card)
     {
         if (!card.CanClick()) return;
-        // Add card to flipped list
-        card.FlipCard();
-        flippedCards.Add(card);
 
-        // Check if we have two cards flipped
-        if (flippedCards.Count == 2)
+        card.FlipCard();
+
+        if (lastFlippedCard == null)
+        {
+            lastFlippedCard = card;
+        }
+        else
         {
             moves++;
             UpdateMovesDisplay();
-            StartCoroutine(CheckForMatch());
+
+            // Copy to local vars to avoid race conditions
+            Card first = lastFlippedCard;
+            Card second = card;
+            lastFlippedCard = null;
+
+            StartCoroutine(CheckPairMatch(first, second));
         }
     }
 
-    private IEnumerator CheckForMatch()
+    private IEnumerator CheckPairMatch(Card card1, Card card2)
     {
-        // Wait a moment for player to see both cards
         yield return new WaitForSeconds(1f);
-
-        Card card1 = flippedCards[0];
-        Card card2 = flippedCards[1];
 
         if (card1.GetCardId() == card2.GetCardId())
         {
-            // Match found!
             card1.SetMatched();
             card2.SetMatched();
             matchedPairs++;
             score += 100;
             UpdateScoreDisplay();
 
-            // Check if game is complete
             if (matchedPairs >= totalPairs)
             {
                 yield return new WaitForSeconds(1f);
@@ -132,13 +135,9 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            // No match, flip cards back
             card1.FlipCard();
             card2.FlipCard();
-
         }
-
-        flippedCards.Clear();
     }
     
     void UpdateScoreDisplay()
