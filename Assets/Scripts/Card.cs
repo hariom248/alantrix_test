@@ -24,22 +24,11 @@ public class Card : MonoBehaviour
 
     void Start()
     {
-        if (cardButton != null)
-        {
-            cardButton.onClick.AddListener(OnCardClicked);
-        }
-
         // Set initial state
         cardImage.sprite = cardBack;
     }
 
-    public void OnCardClicked()
-    {
-        if (isFlipping || isMatched || isFlipped)
-            return;
-
-        FlipCard();
-    }
+    public bool CanClick() => !isFlipping && !isMatched && !isFlipped;
 
     [ContextMenu("Flip")]
     public void FlipCard()

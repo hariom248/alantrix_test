@@ -72,6 +72,7 @@ public class GameManager : MonoBehaviour
                 );
 
                 Card card = cardObj.GetComponent<Card>();
+                card.cardButton.onClick.AddListener(() => OnCardClicked(card));
                 card.cardId = cardIndex / 2;
                 allCards.Add(card);
 
@@ -82,6 +83,7 @@ public class GameManager : MonoBehaviour
     
     public void OnCardClicked(Card card)
     {
+        if (!card.CanClick()) return;
         // Add card to flipped list
         card.FlipCard();
         flippedCards.Add(card);
