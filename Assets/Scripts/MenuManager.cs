@@ -12,18 +12,24 @@ public class MenuManager : MonoBehaviour
     public Button playNewGameButton;
     public Button playLoadGameButton;
     public Button saveGameButton;
+    public Slider gridWidthSlider;
+    public Slider gridHeightSlider;
+    public Text gridWidthText;
+    public Text gridHeightText;
 
 
     [Header("Game Over UI")]
     public Text finalScoreText;
     public Text finalMovesText;
-    public Button playAgainButton;
-    public Button playAgainLoadGameButton;
+    public Button showMainMenuButton;
 
     public AudioManager audioManager;
     public GameDataManager gameDataManager;
     public GameManager gameManager;
     private GameSaveData currentSaveData;
+
+    private int gridWidth = 2;
+    private int gridHeight = 2;
 
     void Start()
     {
@@ -40,23 +46,35 @@ public class MenuManager : MonoBehaviour
         saveGameButton.onClick.AddListener(() => { PlayButtonSound(); SaveGame(); });
 
         // Game Over
-        playAgainButton.onClick.AddListener(() => { PlayButtonSound(); StartGame(); });
-        playAgainLoadGameButton.onClick.AddListener(() => { PlayButtonSound(); LoadGame(); });
+        showMainMenuButton.onClick.AddListener(() => { PlayButtonSound(); ShowMainMenu(); });
 
+        gridWidthSlider.onValueChanged.AddListener(value =>
+        {
+            gridWidth = Mathf.RoundToInt(value);
+            gridWidthText.text = $"GridWidth : {gridWidth}";
+
+            playNewGameButton.interactable = gridWidth > 0 && gridHeight > 0 && gridWidth * gridHeight % 2 == 0;
+        });
+        gridHeightSlider.onValueChanged.AddListener(value =>
+        {
+            gridHeight = Mathf.RoundToInt(value);
+            gridHeightText.text = $"GridHeight : {gridHeight}";
+
+             playNewGameButton.interactable = gridWidth > 0 && gridHeight > 0 && gridWidth * gridHeight % 2 == 0;
+        });
     }
 
     public void UpdateUI()
     {
         gameDataManager.TryLoad(out currentSaveData);
         playLoadGameButton.interactable = currentSaveData != null;
-        playAgainLoadGameButton.interactable = currentSaveData != null;
         backgroundImage.enabled = true;
     }
 
-    void StartGame()
+    private void StartGame()
     {
         HideAllPanels();
-        gameManager.StartNewGame();
+        gameManager.StartNewGame(gridWidth, gridHeight);
     }
 
     private void LoadGame()

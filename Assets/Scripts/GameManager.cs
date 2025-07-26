@@ -3,10 +3,6 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [Header("Game Settings")]
-    public int gridWidth = 4;
-    public int gridHeight = 4;
-
     private Card lastFlippedCard = null;
     public CardSpawner cardSpawner;
     public UIController uiController;
@@ -14,10 +10,10 @@ public class GameManager : MonoBehaviour
 
 
     [ContextMenu("Initialize Game")]
-    public void StartNewGame()
+    public void StartNewGame(int width, int height)
     {
-        cardSpawner.GenerateBoard(gridWidth, gridHeight, OnCardClicked);
-        uiController.Init(gridWidth, gridHeight);
+        cardSpawner.GenerateBoard(width, height, OnCardClicked);
+        uiController.Init(width, height);
     }
 
     [ContextMenu("Load Game")]
@@ -31,8 +27,8 @@ public class GameManager : MonoBehaviour
     {
         return new GameSaveData
         {
-            gridWidth = gridWidth,
-            gridHeight = gridHeight,
+            gridWidth = cardSpawner.GridWidth,
+            gridHeight = cardSpawner.GridHeight,
             cardStates = cardSpawner.GetCardStates(),
             score = uiController.Score,
             moves = uiController.Moves,
