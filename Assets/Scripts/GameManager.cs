@@ -8,10 +8,10 @@ public class GameManager : MonoBehaviour
     public int gridWidth = 4;
     public int gridHeight = 4;
     
-    [Header("Card Prefab")]
+    [Header("Card and Sprites Setup")]
     public GameObject cardPrefab;
-
     public GameObject cardParent;
+    public Sprite[] cardSprites;
     
     private List<Card> allCards = new List<Card>();
     private List<Card> flippedCards = new List<Card>();
@@ -56,7 +56,6 @@ public class GameManager : MonoBehaviour
 
         int cardIndex = 0;
         allCards.Clear();
-
         for (int y = 0; y < gridHeight; y++)
         {
             for (int x = 0; x < gridWidth; x++)
@@ -73,6 +72,7 @@ public class GameManager : MonoBehaviour
 
                 Card card = cardObj.GetComponent<Card>();
                 card.cardButton.onClick.AddListener(() => OnCardClicked(card));
+                card.cardFront = cardSprites[cardIndex / 2];  
                 card.cardId = cardIndex / 2;
                 allCards.Add(card);
 
