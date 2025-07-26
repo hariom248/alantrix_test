@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
@@ -10,6 +11,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip cardMatchSound;
     public AudioClip cardMismatchSound;
     public AudioClip gameCompleteSound;
+    public AudioClip buttonClickSound;
     
     [Header("Audio Settings")]
     [Range(0f, 1f)]
@@ -52,6 +54,11 @@ public class AudioManager : MonoBehaviour
     public void PlayGameCompleteSound()
     {
         PlaySFX(gameCompleteSound);
+    }
+
+    public void PlayButtonClickSound()
+    {
+        PlaySFX(buttonClickSound);
     }
     
     public void PlaySFX(AudioClip clip)

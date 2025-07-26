@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,9 @@ public class UIController : MonoBehaviour
     public Text scoreText;
     public Text movesText;
     public Text comboText;
+    public Button menuButton;
+    public MenuManager menuManager;
+    public AudioManager audioManager;
 
     [Header("Score Settings")]
     public int baseMatchPoints = 100;
@@ -18,6 +22,20 @@ public class UIController : MonoBehaviour
     public int ComboMultiplier { get; private set; } = 0;
 
     private int totalPairs;
+
+    private void Start()
+    {
+        menuButton.onClick.AddListener(() =>
+        {
+            menuManager.ShowMainMenu();
+            audioManager.PlayButtonClickSound();
+        });
+    }
+
+    public void ShowGameCompletePanel()
+    {
+        menuManager.ShowGameOver(Score, Moves);
+    }
 
     public void Init(int gridWidth, int gridHeight)
     {

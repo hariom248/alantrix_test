@@ -8,36 +8,16 @@ public class GameManager : MonoBehaviour
     public int gridHeight = 4;
 
     private Card lastFlippedCard = null;
-
-    private GameDataManager dataManager;
     public CardSpawner cardSpawner;
     public UIController uiController;
     public AudioManager audioManager;
 
-    void Awake()
-    {
-         dataManager = new GameDataManager();
-    }
-
-    void Start()
-    {
-        if (dataManager.TryLoad(out GameSaveData data))
-            LoadGame(data);
-        else
-            StartNewGame();
-    }
 
     [ContextMenu("Initialize Game")]
     public void StartNewGame()
     {
         cardSpawner.GenerateBoard(gridWidth, gridHeight, OnCardClicked);
         uiController.Init(gridWidth, gridHeight);
-    }
-
-    [ContextMenu("Reset Data")]
-    public void ResetData()
-    {
-        dataManager.ClearSave();
     }
 
     [ContextMenu("Load Game")]
@@ -47,21 +27,18 @@ public class GameManager : MonoBehaviour
         uiController.LoadUI(data);
     }
 
-    [ContextMenu("Save Game")]
-    public void SaveGame()
+    public GameSaveData GetCurrentGameState()
     {
-        var saveData = new GameSaveData
+        return new GameSaveData
         {
-            gridWidth = cardSpawner.GridWidth,
-            gridHeight = cardSpawner.GridHeight,
+            gridWidth = gridWidth,
+            gridHeight = gridHeight,
             cardStates = cardSpawner.GetCardStates(),
             score = uiController.Score,
             moves = uiController.Moves,
             matchedPairs = uiController.MatchedPairs,
             comboMultiplier = uiController.ComboMultiplier
         };
-
-        dataManager.Save(saveData);
     }
 
     public void OnCardClicked(Card card)
@@ -104,7 +81,7 @@ public class GameManager : MonoBehaviour
             {
                 yield return new WaitForSeconds(1f);
                 audioManager.PlayGameCompleteSound();
-                Debug.Log("Game Complete");
+                uiController.ShowGameCompletePanel();
             }
         }
         else
