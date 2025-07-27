@@ -12,6 +12,7 @@ public class MenuManager : MonoBehaviour
     public Button playNewGameButton;
     public Button playLoadGameButton;
     public Button saveGameButton;
+    public Button resumeGameButton;
     public Slider gridWidthSlider;
     public Slider gridHeightSlider;
     public Text gridWidthText;
@@ -44,6 +45,7 @@ public class MenuManager : MonoBehaviour
         playNewGameButton.onClick.AddListener(() => { PlayButtonSound(); StartGame(); });
         playLoadGameButton.onClick.AddListener(() => { PlayButtonSound(); LoadGame(); });
         saveGameButton.onClick.AddListener(() => { PlayButtonSound(); SaveGame(); });
+        resumeGameButton.onClick.AddListener(() => { PlayButtonSound(); ResumeGame(); });
 
         // Game Over
         showMainMenuButton.onClick.AddListener(() => { PlayButtonSound(); ShowMainMenu(); });
@@ -67,12 +69,19 @@ public class MenuManager : MonoBehaviour
         gridHeightSlider.value = gridHeight;
     }
 
+    private void ResumeGame()
+    {
+        HideAllPanels();
+    }
+
     public void UpdateUI()
     {
         gameDataManager.TryLoad(out currentSaveData);
         playLoadGameButton.interactable = currentSaveData != null;
         var currentGameState = gameManager.GetCurrentGameState();
-        saveGameButton.interactable = currentGameState != null && currentGameState.gridWidth > 0 && currentGameState.gridHeight > 0 && !gameManager.uiController.IsGameComplete();
+        bool gameInProgress = currentGameState != null && currentGameState.gridWidth > 0 && currentGameState.gridHeight > 0;
+        saveGameButton.interactable = gameInProgress;
+        resumeGameButton.interactable = gameInProgress;
         backgroundImage.enabled = true;
     }
 
