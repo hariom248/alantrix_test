@@ -1,0 +1,3 @@
+Hi, I've intentionally avoided using singletons for this test. The goal is to break the system into smaller, modular components and use a simple form of inversion of control (IoC) by manually wiring dependencies. Since external plugins are not allowed, and building a custom IoC container (however simple) would be overkill for this assignment, I've opted for a lightweight, manual approach to dependency management.
+
+Further breaking down some of the classes for strict SRP (Single Responsibility Principle) compliance was also avoided, as it would introduce unnecessary fragmentation and complexity for the current scale and scope of the project.
