@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 121523621}
   - component: {fileID: 121523620}
   m_Layer: 5
-  m_Name: Button (Legacy) (1)
+  m_Name: LoadGame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -779,7 +779,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Play Again?
+  m_Text: Continue?
 --- !u!222 &357109748
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1023,7 +1023,7 @@ GameObject:
   - component: {fileID: 469000009}
   - component: {fileID: 469000010}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: WidthSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1533,7 +1533,7 @@ GameObject:
   - component: {fileID: 843544937}
   - component: {fileID: 843544936}
   m_Layer: 5
-  m_Name: Button (Legacy) (3)
+  m_Name: ResumeGame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1735,7 +1735,7 @@ GameObject:
   - component: {fileID: 895330534}
   - component: {fileID: 895330533}
   m_Layer: 5
-  m_Name: Button (Legacy)
+  m_Name: PlayNewGame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2030,7 +2030,7 @@ GameObject:
   - component: {fileID: 1042391374}
   - component: {fileID: 1042391373}
   m_Layer: 5
-  m_Name: Text (Legacy) (3)
+  m_Name: Move
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2383,7 +2383,7 @@ GameObject:
   - component: {fileID: 1205582902}
   - component: {fileID: 1205582901}
   m_Layer: 5
-  m_Name: Text (Legacy) (1)
+  m_Name: Message
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2835,7 +2835,7 @@ GameObject:
   - component: {fileID: 1495019890}
   - component: {fileID: 1495019889}
   m_Layer: 5
-  m_Name: Button (Legacy)
+  m_Name: PlayAgain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3023,7 +3023,7 @@ GameObject:
   - component: {fileID: 1525725916}
   - component: {fileID: 1525725917}
   m_Layer: 5
-  m_Name: Slider (1)
+  m_Name: HeightSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3115,7 +3115,7 @@ GameObject:
   - component: {fileID: 1639294341}
   - component: {fileID: 1639294340}
   m_Layer: 5
-  m_Name: Text (Legacy) (2)
+  m_Name: Score
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3478,7 +3478,7 @@ GameObject:
   - component: {fileID: 1847025890}
   - component: {fileID: 1847025889}
   m_Layer: 5
-  m_Name: Button (Legacy) (2)
+  m_Name: SaveGame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3599,7 +3599,7 @@ GameObject:
   - component: {fileID: 1867149773}
   - component: {fileID: 1867149772}
   m_Layer: 5
-  m_Name: Text (Legacy) (2)
+  m_Name: HeightText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3969,7 +3969,7 @@ GameObject:
   - component: {fileID: 2111524448}
   - component: {fileID: 2111524447}
   m_Layer: 5
-  m_Name: Button (Legacy)
+  m_Name: OpenMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4090,7 +4090,7 @@ GameObject:
   - component: {fileID: 2135995031}
   - component: {fileID: 2135995030}
   m_Layer: 5
-  m_Name: Text (Legacy) (1)
+  m_Name: WidthText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
