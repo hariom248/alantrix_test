@@ -10,6 +10,7 @@ public class CardSpawner : MonoBehaviour
     public GameObject cardPrefab;
     public RectTransform cardParent;
     public float spacing = 20f;
+    public float margin = 20f;
     public Sprite[] cardSprites;
 
     private int gridWidth;
@@ -54,13 +55,13 @@ public class CardSpawner : MonoBehaviour
         );
 
         // Resize the parent to fit just the grid
-        float targetWidth = cardSize * gridWidth + spacing * (gridWidth - 1);
-        float targetHeight = cardSize * gridHeight + spacing * (gridHeight - 1);
+        float targetWidth = cardSize * gridWidth + spacing * (gridWidth - 1) + margin;
+        float targetHeight = cardSize * gridHeight + spacing * (gridHeight - 1) + margin;
         parentRect.sizeDelta = new Vector2(targetWidth, targetHeight);
 
         // Centering offsets
-        float startX = -targetWidth / 2f + cardSize / 2f;
-        float startY = targetHeight / 2f - cardSize / 2f;
+        float startX = -targetWidth / 2f + margin / 2f + cardSize / 2f;
+        float startY = targetHeight / 2f - margin / 2f - cardSize / 2f;
 
         List<int> ids = GenerateShuffledIds(totalCards);
 

@@ -1813,6 +1813,7 @@ MonoBehaviour:
   cardPrefab: {fileID: 401118314824750849, guid: 121e911406e3c1248a7b8cc65375101e, type: 3}
   cardParent: {fileID: 949825062}
   spacing: 20
+  margin: 20
   cardSprites:
   - {fileID: 588075714, guid: a03e9228371be9449a97a937850924ca, type: 3}
   - {fileID: 955436310, guid: a03e9228371be9449a97a937850924ca, type: 3}
