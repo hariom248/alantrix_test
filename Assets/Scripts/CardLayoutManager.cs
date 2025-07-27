@@ -5,7 +5,7 @@ using System;
 using Random = UnityEngine.Random;
 using System.Linq;
 
-public class CardSpawner : MonoBehaviour
+public class CardLayoutManager : MonoBehaviour
 {
     [Header("Card Settings")]
     public GameObject cardPrefab;

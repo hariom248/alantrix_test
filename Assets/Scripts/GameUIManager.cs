@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIController : MonoBehaviour
+public class GameUIManager : MonoBehaviour
 {
     [Header("UI References")]
     public Text scoreText;
