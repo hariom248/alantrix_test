@@ -28,8 +28,8 @@ public class MenuManager : MonoBehaviour
     public GameManager gameManager;
     private GameSaveData currentSaveData;
 
-    private int gridWidth = 2;
-    private int gridHeight = 2;
+    private int gridWidth = 4;
+    private int gridHeight = 3;
 
     void Start()
     {
@@ -60,8 +60,11 @@ public class MenuManager : MonoBehaviour
             gridHeight = Mathf.RoundToInt(value);
             gridHeightText.text = $"GridHeight : {gridHeight}";
 
-             playNewGameButton.interactable = gridWidth > 0 && gridHeight > 0 && gridWidth * gridHeight % 2 == 0;
+            playNewGameButton.interactable = gridWidth > 0 && gridHeight > 0 && gridWidth * gridHeight % 2 == 0;
         });
+        
+        gridWidthSlider.value = gridWidth;
+        gridHeightSlider.value = gridHeight;
     }
 
     public void UpdateUI()
