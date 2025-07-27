@@ -12,8 +12,7 @@ public struct CardState
 [System.Serializable]
 public class GameSaveData
 {
-    public int gridWidth;
-    public int gridHeight;
+    public GridSize gridSize;
     public int score;
     public int moves;
     public int matchedPairs;

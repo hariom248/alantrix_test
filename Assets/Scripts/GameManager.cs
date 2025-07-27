@@ -1,38 +1,45 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     [Header("Game Settings")]
     public float matchDelay = 1f;
-    
+
     [Header("Manager References")]
     public CardLayoutManager cardLayoutManager;
     public GameUIManager gameUIManager;
     public AudioManager audioManager;
-    
+
+    private GridSize gridSize;
     private Card lastFlippedCard = null;
 
 
-    public void StartNewGame(int width, int height)
+    public void StartNewGame(GridSize gridSize)
     {
-        cardLayoutManager.GenerateBoard(width, height, OnCardClicked);
-        gameUIManager.Initialize(width, height);
+        this.gridSize = gridSize;
+        cardLayoutManager.GenerateBoard(gridSize, OnCardClicked);
+        gameUIManager.Initialize(GetTotalPairs());
     }
 
     public void LoadGame(GameSaveData data)
     {
+        this.gridSize = data.gridSize;
         cardLayoutManager.LoadFromSave(data, OnCardClicked);
-        gameUIManager.LoadUI(data);
+        gameUIManager.LoadUI(data, GetTotalPairs());
+    }
+
+    private int GetTotalPairs()
+    {
+        return gridSize.width * gridSize.height / 2;
     }
 
     public GameSaveData GetCurrentGameState()
     {
         return new GameSaveData
         {
-            gridWidth = cardLayoutManager.GridWidth,
-            gridHeight = cardLayoutManager.GridHeight,
+            gridSize = gridSize,
             cardStates = cardLayoutManager.GetCardStates(),
             score = gameUIManager.Score,
             moves = gameUIManager.Moves,

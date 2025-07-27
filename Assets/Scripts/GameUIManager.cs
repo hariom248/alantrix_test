@@ -36,24 +36,24 @@ public class GameUIManager : MonoBehaviour
         menuManager.ShowGameOver(Score, Moves);
     }
 
-    public void Initialize(int gridWidth, int gridHeight)
+    public void Initialize(int pairs)
     {
         Score = 0;
         Moves = 0;
         MatchedPairs = 0;
         ComboMultiplier = 0;
-        totalPairs = gridWidth * gridHeight / 2;
+        totalPairs = pairs;
 
         UpdateUI();
     }
 
-    public void LoadUI(GameSaveData data)
+    public void LoadUI(GameSaveData data, int pairs)
     {
         Score = data.score;
         Moves = data.moves;
         MatchedPairs = data.matchedPairs;
         ComboMultiplier = data.comboMultiplier;
-        totalPairs = data.gridWidth * data.gridHeight / 2;
+        totalPairs = pairs;
 
         UpdateUI();
     }

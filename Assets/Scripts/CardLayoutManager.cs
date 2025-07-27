@@ -1,34 +1,40 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
+
+[Serializable]
+public struct GridSize
+{
+    public int width;
+    public int height;
+
+    public GridSize(int width, int height)
+    {
+        this.width = width;
+        this.height = height;
+    }
+}
 
 public class CardLayoutManager : MonoBehaviour
 {
-    [Header("Card Settings")]
-    public GameObject cardPrefab;
-    public Sprite[] cardSprites;
-    
     [Header("Layout Settings")]
     public RectTransform cardParent;
     public float spacing = 20f;
     public float margin = 20f;
-    
-    public int GridWidth => gridWidth;
-    public int GridHeight => gridHeight;
-    
-    private int gridWidth;
-    private int gridHeight;
+
+    [Header("Manager References")]
+    public CardGenerator cardGenerator;
+
     private int availableWidth;
     private int availableHeight;
-    
-    public List<Card> AllCards { get; private set; } = new List<Card>();
+
+    private List<Card> cards = new List<Card>();
 
     private void Start()
     {
         InitializeCardParent();
     }
-    
+
     private void InitializeCardParent()
     {
         RectTransform parentRect = cardParent.GetComponent<RectTransform>();
@@ -44,17 +50,16 @@ public class CardLayoutManager : MonoBehaviour
         parentRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, availableHeight);
     }
 
-    public void GenerateBoard(int width, int height, Action<Card> OnCardClick)
+    public void GenerateBoard(GridSize gridSize, Action<Card> OnCardClick)
     {
-        GenerateBoardInternal(width, height, availableWidth, availableHeight, OnCardClick);
+        GenerateBoardInternal(gridSize, availableWidth, availableHeight, OnCardClick);
     }
 
     public void LoadFromSave(GameSaveData saveData, Action<Card> OnCardClick)
     {
         RectTransform parentRect = cardParent.GetComponent<RectTransform>();
         GenerateBoardInternal(
-            saveData.gridWidth,
-            saveData.gridHeight,
+            saveData.gridSize,
             parentRect.rect.width,
             parentRect.rect.height,
             OnCardClick,
@@ -63,8 +68,7 @@ public class CardLayoutManager : MonoBehaviour
     }
 
     private void GenerateBoardInternal(
-        int width,
-        int height,
+        GridSize gridSize,
         float availableWidth,
         float availableHeight,
         Action<Card> OnCardClick,
@@ -73,60 +77,39 @@ public class CardLayoutManager : MonoBehaviour
     {
         ClearBoard();
 
-        gridWidth = width;
-        gridHeight = height;
-        int totalCards = width * height;
+        int totalCards = gridSize.width * gridSize.height;
 
         RectTransform parentRect = cardParent.GetComponent<RectTransform>();
 
         float cardSize = Mathf.Min(
-            (availableWidth - spacing * (width - 1)) / width,
-            (availableHeight - spacing * (height - 1)) / height
+            (availableWidth - spacing * (gridSize.width - 1)) / gridSize.width,
+            (availableHeight - spacing * (gridSize.height - 1)) / gridSize.height
         );
 
         float margin = 40f;
-        float targetWidth = cardSize * width + spacing * (width - 1) + margin;
-        float targetHeight = cardSize * height + spacing * (height - 1) + margin;
+        float targetWidth = cardSize * gridSize.width + spacing * (gridSize.width - 1) + margin;
+        float targetHeight = cardSize * gridSize.height + spacing * (gridSize.height - 1) + margin;
         parentRect.sizeDelta = new Vector2(targetWidth, targetHeight);
 
         float startX = -targetWidth / 2f + margin / 2f + cardSize / 2f;
         float startY = targetHeight / 2f - margin / 2f - cardSize / 2f;
 
-        List<int> ids = savedStates == null
-            ? GenerateShuffledIds(totalCards)
-            : Enumerable.Range(0, totalCards).ToList();
+        // Generate cards using CardGenerator
+        cards = cardGenerator.GenerateCards(totalCards, OnCardClick, savedStates);
 
+        // Position cards in grid
         for (int i = 0; i < totalCards; i++)
         {
-            int x = i % width;
-            int y = i / width;
+            int x = i % gridSize.width;
+            int y = i / gridSize.width;
 
-            GameObject obj = Instantiate(cardPrefab, cardParent);
-            RectTransform cardRect = obj.GetComponent<RectTransform>();
-
+            RectTransform cardRect = cards[i].GetComponent<RectTransform>();
+            cardRect.SetParent(cardParent, false);
             cardRect.sizeDelta = new Vector2(cardSize, cardSize);
             cardRect.anchoredPosition = new Vector2(
                 startX + x * (cardSize + spacing),
                 startY - y * (cardSize + spacing)
             );
-
-            Card card = obj.GetComponent<Card>();
-
-            int id = savedStates == null ? ids[i] : savedStates[i].cardId;
-            card.CardId = id;
-
-            if (cardSprites.Length > id)
-            {
-                card.cardFront = cardSprites[id];
-            }
-
-            if (savedStates != null && savedStates[i].cardVisualState == CardVisualState.Matched)
-            {
-                card.FlipAndMatch();
-            }
-
-            card.cardButton.onClick.AddListener(() => OnCardClick(card));
-            AllCards.Add(card);
         }
     }
 
@@ -135,29 +118,13 @@ public class CardLayoutManager : MonoBehaviour
         foreach (Transform child in cardParent)
             Destroy(child.gameObject);
 
-        AllCards.Clear();
-    }
-
-    private List<int> GenerateShuffledIds(int total)
-    {
-        List<int> ids = new List<int>();
-        for (int i = 0; i < total / 2; i++)
-        {
-            ids.Add(i);
-            ids.Add(i);
-        }
-        for (int i = 0; i < ids.Count; i++)
-        {
-            int j = UnityEngine.Random.Range(0, ids.Count);
-            (ids[i], ids[j]) = (ids[j], ids[i]);
-        }
-        return ids;
+        cards.Clear();
     }
 
     public List<CardState> GetCardStates()
     {
         var states = new List<CardState>();
-        foreach (var card in AllCards)
+        foreach (var card in cards)
         {
             states.Add(new CardState
             {

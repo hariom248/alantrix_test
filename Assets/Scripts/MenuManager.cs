@@ -29,8 +29,7 @@ public class MenuManager : MonoBehaviour
     public GameManager gameManager;
     
     [Header("Grid Settings")]
-    private int gridWidth = 4;
-    private int gridHeight = 3;
+    private GridSize gridSize = new GridSize(4, 3); // Default grid size
     
     private GameSaveData currentSaveData;
 
@@ -54,21 +53,21 @@ public class MenuManager : MonoBehaviour
 
         gridWidthSlider.onValueChanged.AddListener(value =>
         {
-            gridWidth = Mathf.RoundToInt(value);
-            gridWidthText.text = $"GridWidth : {gridWidth}";
+            gridSize.width = Mathf.RoundToInt(value);
+            gridWidthText.text = $"GridWidth : {gridSize.width}";
 
-            playNewGameButton.interactable = gridWidth > 0 && gridHeight > 0 && gridWidth * gridHeight % 2 == 0;
+            playNewGameButton.interactable = gridSize.width > 0 && gridSize.height > 0 && gridSize.width * gridSize.height % 2 == 0;
         });
         gridHeightSlider.onValueChanged.AddListener(value =>
         {
-            gridHeight = Mathf.RoundToInt(value);
-            gridHeightText.text = $"GridHeight : {gridHeight}";
+            gridSize.height = Mathf.RoundToInt(value);
+            gridHeightText.text = $"GridHeight : {gridSize.height}";
 
-            playNewGameButton.interactable = gridWidth > 0 && gridHeight > 0 && gridWidth * gridHeight % 2 == 0;
+            playNewGameButton.interactable = gridSize.width > 0 && gridSize.height > 0 && gridSize.width * gridSize.height % 2 == 0;
         });
         
-        gridWidthSlider.value = gridWidth;
-        gridHeightSlider.value = gridHeight;
+        gridWidthSlider.value = gridSize.width;
+        gridHeightSlider.value = gridSize.height;
     }
 
     private void ResumeGame()
@@ -81,7 +80,7 @@ public class MenuManager : MonoBehaviour
         gameDataManager.TryLoad(out currentSaveData);
         playLoadGameButton.interactable = currentSaveData != null;
         var currentGameState = gameManager.GetCurrentGameState();
-        bool gameInProgress = currentGameState != null && currentGameState.gridWidth > 0 && currentGameState.gridHeight > 0;
+        bool gameInProgress = currentGameState != null && currentGameState.gridSize.width > 0 &&  currentGameState.gridSize.height > 0;
         saveGameButton.interactable = gameInProgress;
         resumeGameButton.interactable = gameInProgress;
         backgroundImage.enabled = true;
@@ -90,7 +89,7 @@ public class MenuManager : MonoBehaviour
     private void StartGame()
     {
         HideAllPanels();
-        gameManager.StartNewGame(gridWidth, gridHeight);
+        gameManager.StartNewGame(gridSize);
     }
 
     private void LoadGame()
