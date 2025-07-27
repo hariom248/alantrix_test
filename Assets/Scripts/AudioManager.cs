@@ -17,23 +17,9 @@ public class AudioManager : MonoBehaviour
     [Range(0f, 1f)]
     public float sfxVolume = 1f;
     
-    
     void Start()
     {
-        InitializeAudio();
-    }
-    
-    void InitializeAudio()
-    {
-        if (sfxSource == null)
-        {
-            GameObject sfxObj = new GameObject("SFXSource");
-            sfxObj.transform.SetParent(transform);
-            sfxSource = sfxObj.AddComponent<AudioSource>();
-            sfxSource.loop = false;
-            sfxSource.playOnAwake = false;
-            sfxSource.volume = sfxVolume;
-        }
+        sfxSource.volume = sfxVolume;
     }
     
     public void PlayCardFlipSound()
@@ -67,17 +53,5 @@ public class AudioManager : MonoBehaviour
         {
             sfxSource.PlayOneShot(clip);
         }
-    }
-    
-    public void Mute()
-    {
-        if (sfxSource != null)
-            sfxSource.mute = true;
-    }
-    
-    public void Unmute()
-    {
-        if (sfxSource != null)
-            sfxSource.mute = false;
     }
 } 
