@@ -31,7 +31,6 @@ public class Card : MonoBehaviour
 
     public bool CanClick() => !isFlipping && !isMatched && !isFlipped;
 
-    [ContextMenu("Flip")]
     public void FlipCard()
     {
         if (isFlipping) return;
@@ -92,7 +91,6 @@ public class Card : MonoBehaviour
         transform.localScale = Vector3.one;
     }
 
-    [ContextMenu("Match")]
     public void SetMatched()
     {
         isMatched = true;
@@ -129,21 +127,7 @@ public class Card : MonoBehaviour
         }
     }
 
-    [ContextMenu("Reset")]
-    public void ResetCard()
-    {
-        isFlipped = false;
-        isMatched = false;
-        isFlipping = false;
-        cardButton.interactable = true;
-        cardImage.sprite = cardBack;
-        cardImage.color = Color.white;
-        transform.localScale = Vector3.one;
-    }
-
     public int GetCardId() => cardId;
     public bool IsFlipped() => isFlipped;
     public bool IsMatched() => isMatched;
 }
-
-//TODO : Remove Helper ContextMenu
