@@ -103,6 +103,8 @@ public class MenuManager : MonoBehaviour
 
     public void ShowGameOver(int finalScore, int finalMoves)
     {
+        HideAllPanels();
+        UpdateUI();
         gameOverPanel.SetActive(true);
 
         if (finalScoreText != null)
