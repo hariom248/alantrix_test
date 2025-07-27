@@ -18,28 +18,30 @@ public class MenuManager : MonoBehaviour
     public Text gridWidthText;
     public Text gridHeightText;
 
-
     [Header("Game Over UI")]
     public Text finalScoreText;
     public Text finalMovesText;
     public Button showMainMenuButton;
 
+    [Header("Manager References")]
     public AudioManager audioManager;
     public GameDataManager gameDataManager;
     public GameManager gameManager;
-    private GameSaveData currentSaveData;
-
+    
+    [Header("Grid Settings")]
     private int gridWidth = 4;
     private int gridHeight = 3;
+    
+    private GameSaveData currentSaveData;
 
-    void Start()
+    private void Start()
     {
         gameDataManager = new GameDataManager();
         SetupUI();
         ShowMainMenu();
     }
 
-    void SetupUI()
+    private void SetupUI()
     {
         // Main Menu
         playNewGameButton.onClick.AddListener(() => { PlayButtonSound(); StartGame(); });
@@ -127,7 +129,7 @@ public class MenuManager : MonoBehaviour
             finalMovesText.text = "Moves: " + finalMoves;
     }
 
-    void HideAllPanels()
+    private void HideAllPanels()
     {
         mainMenuPanel.SetActive(false);
         gameOverPanel.SetActive(false);

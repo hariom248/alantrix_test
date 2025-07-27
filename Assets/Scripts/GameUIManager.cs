@@ -14,12 +14,12 @@ public class GameUIManager : MonoBehaviour
     [Header("Score Settings")]
     public int baseMatchPoints = 100;
     public int comboIncrement = 50;
-
+    
     public int Score { get; private set; }
     public int Moves { get; private set; }
     public int MatchedPairs { get; private set; }
     public int ComboMultiplier { get; private set; } = 0;
-
+    
     private int totalPairs;
 
     private void Start()
@@ -36,7 +36,7 @@ public class GameUIManager : MonoBehaviour
         menuManager.ShowGameOver(Score, Moves);
     }
 
-    public void Init(int gridWidth, int gridHeight)
+    public void Initialize(int gridWidth, int gridHeight)
     {
         Score = 0;
         Moves = 0;

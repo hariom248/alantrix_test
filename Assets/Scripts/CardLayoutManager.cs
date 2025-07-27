@@ -1,31 +1,35 @@
-// CardSpawner.cs
-using UnityEngine;
-using System.Collections.Generic;
 using System;
-using Random = UnityEngine.Random;
+using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class CardLayoutManager : MonoBehaviour
 {
     [Header("Card Settings")]
     public GameObject cardPrefab;
+    public Sprite[] cardSprites;
+    
+    [Header("Layout Settings")]
     public RectTransform cardParent;
     public float spacing = 20f;
     public float margin = 20f;
-    public Sprite[] cardSprites;
-
-    private int gridWidth;
-    private int gridHeight;
-
+    
     public int GridWidth => gridWidth;
     public int GridHeight => gridHeight;
-
-    public List<Card> AllCards { get; set; } = new List<Card>();
-
+    
+    private int gridWidth;
+    private int gridHeight;
     private int availableWidth;
     private int availableHeight;
+    
+    public List<Card> AllCards { get; private set; } = new List<Card>();
 
     private void Start()
+    {
+        InitializeCardParent();
+    }
+    
+    private void InitializeCardParent()
     {
         RectTransform parentRect = cardParent.GetComponent<RectTransform>();
 
@@ -118,7 +122,7 @@ public class CardLayoutManager : MonoBehaviour
 
             if (savedStates != null && savedStates[i].cardVisualState == CardVisualState.Matched)
             {
-                card.FlipAndMatched();
+                card.FlipAndMatch();
             }
 
             card.cardButton.onClick.AddListener(() => OnCardClick(card));
@@ -126,7 +130,7 @@ public class CardLayoutManager : MonoBehaviour
         }
     }
 
-    void ClearBoard()
+    private void ClearBoard()
     {
         foreach (Transform child in cardParent)
             Destroy(child.gameObject);
@@ -134,7 +138,7 @@ public class CardLayoutManager : MonoBehaviour
         AllCards.Clear();
     }
 
-    List<int> GenerateShuffledIds(int total)
+    private List<int> GenerateShuffledIds(int total)
     {
         List<int> ids = new List<int>();
         for (int i = 0; i < total / 2; i++)
@@ -144,7 +148,7 @@ public class CardLayoutManager : MonoBehaviour
         }
         for (int i = 0; i < ids.Count; i++)
         {
-            int j = Random.Range(0, ids.Count);
+            int j = UnityEngine.Random.Range(0, ids.Count);
             (ids[i], ids[j]) = (ids[j], ids[i]);
         }
         return ids;

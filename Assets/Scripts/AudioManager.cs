@@ -17,7 +17,7 @@ public class AudioManager : MonoBehaviour
     [Range(0f, 1f)]
     public float sfxVolume = 1f;
     
-    void Start()
+    private void Start()
     {
         sfxSource.volume = sfxVolume;
     }

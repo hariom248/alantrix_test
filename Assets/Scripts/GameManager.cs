@@ -1,19 +1,24 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    private Card lastFlippedCard = null;
+    [Header("Game Settings")]
+    public float matchDelay = 1f;
+    
+    [Header("Manager References")]
     public CardLayoutManager cardLayoutManager;
     public GameUIManager gameUIManager;
     public AudioManager audioManager;
-    public float matchDelay = 1f;
+    
+    private Card lastFlippedCard = null;
 
 
     public void StartNewGame(int width, int height)
     {
         cardLayoutManager.GenerateBoard(width, height, OnCardClicked);
-        gameUIManager.Init(width, height);
+        gameUIManager.Initialize(width, height);
     }
 
     public void LoadGame(GameSaveData data)

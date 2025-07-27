@@ -5,7 +5,6 @@ using UnityEngine;
 [System.Serializable]
 public struct CardState
 {
-    public int spriteIndex;
     public int cardId;
     public CardVisualState cardVisualState;
 }
@@ -24,7 +23,7 @@ public class GameSaveData
 
 public class GameDataManager
 {
-    const string SaveKey = "SaveData";
+    private const string SaveKey = "SaveData";
 
     public void Save(GameSaveData data)
     {
