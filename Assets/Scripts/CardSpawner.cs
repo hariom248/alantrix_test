@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 using Random = UnityEngine.Random;
+using System.Linq;
 
 public class CardSpawner : MonoBehaviour
 {
@@ -27,8 +28,8 @@ public class CardSpawner : MonoBehaviour
     {
         RectTransform parentRect = cardParent.GetComponent<RectTransform>();
 
-        availableWidth = (int) parentRect.rect.width;
-        availableHeight = (int) parentRect.rect.height;
+        availableWidth = (int)parentRect.rect.width;
+        availableHeight = (int)parentRect.rect.height;
 
         parentRect.anchorMin = new Vector2(0.5f, 0.5f);
         parentRect.anchorMax = new Vector2(0.5f, 0.5f);
@@ -40,54 +41,87 @@ public class CardSpawner : MonoBehaviour
 
     public void GenerateBoard(int width, int height, Action<Card> OnCardClick)
     {
+        GenerateBoardInternal(width, height, availableWidth, availableHeight, OnCardClick);
+    }
+
+    public void LoadFromSave(GameSaveData saveData, Action<Card> OnCardClick)
+    {
+        RectTransform parentRect = cardParent.GetComponent<RectTransform>();
+        GenerateBoardInternal(
+            saveData.gridWidth,
+            saveData.gridHeight,
+            parentRect.rect.width,
+            parentRect.rect.height,
+            OnCardClick,
+            saveData.cardStates
+        );
+    }
+
+    private void GenerateBoardInternal(
+        int width,
+        int height,
+        float availableWidth,
+        float availableHeight,
+        Action<Card> OnCardClick,
+        List<CardState> savedStates = null
+    )
+    {
         ClearBoard();
 
         gridWidth = width;
         gridHeight = height;
-        int totalCards = gridWidth * gridHeight;
+        int totalCards = width * height;
 
         RectTransform parentRect = cardParent.GetComponent<RectTransform>();
 
-        // Compute max square card size that fits
         float cardSize = Mathf.Min(
-            (availableWidth - spacing * (gridWidth - 1)) / gridWidth,
-            (availableHeight - spacing * (gridHeight - 1)) / gridHeight
+            (availableWidth - spacing * (width - 1)) / width,
+            (availableHeight - spacing * (height - 1)) / height
         );
 
-        // Resize the parent to fit just the grid
-        float targetWidth = cardSize * gridWidth + spacing * (gridWidth - 1) + margin;
-        float targetHeight = cardSize * gridHeight + spacing * (gridHeight - 1) + margin;
+        float margin = 40f;
+        float targetWidth = cardSize * width + spacing * (width - 1) + margin;
+        float targetHeight = cardSize * height + spacing * (height - 1) + margin;
         parentRect.sizeDelta = new Vector2(targetWidth, targetHeight);
 
-        // Centering offsets
         float startX = -targetWidth / 2f + margin / 2f + cardSize / 2f;
         float startY = targetHeight / 2f - margin / 2f - cardSize / 2f;
 
-        List<int> ids = GenerateShuffledIds(totalCards);
+        List<int> ids = savedStates == null
+            ? GenerateShuffledIds(totalCards)
+            : Enumerable.Range(0, totalCards).ToList();
 
-        for (int y = 0, index = 0; y < gridHeight; y++)
+        for (int i = 0; i < totalCards; i++)
         {
-            for (int x = 0; x < gridWidth; x++, index++)
+            int x = i % width;
+            int y = i / width;
+
+            GameObject obj = Instantiate(cardPrefab, cardParent);
+            RectTransform cardRect = obj.GetComponent<RectTransform>();
+
+            cardRect.sizeDelta = new Vector2(cardSize, cardSize);
+            cardRect.anchoredPosition = new Vector2(
+                startX + x * (cardSize + spacing),
+                startY - y * (cardSize + spacing)
+            );
+
+            Card card = obj.GetComponent<Card>();
+            card.cardIndex = i;
+
+            int id = savedStates == null ? ids[i] : savedStates[i].cardId;
+            card.cardId = id;
+
+            if (cardSprites != null && cardSprites.Length > id)
+                card.cardFront = cardSprites[id];
+
+            if (savedStates != null)
             {
-                GameObject obj = Instantiate(cardPrefab, cardParent);
-                RectTransform cardRect = obj.GetComponent<RectTransform>();
-
-                cardRect.sizeDelta = new Vector2(cardSize, cardSize);
-                cardRect.anchoredPosition = new Vector2(
-                    startX + x * (cardSize + spacing),
-                    startY - y * (cardSize + spacing)
-                );
-
-                Card card = obj.GetComponent<Card>();
-                card.cardId = ids[index];
-                card.cardIndex = index;
-                card.cardButton.onClick.AddListener(() => OnCardClick(card));
-                if (cardSprites != null && cardSprites.Length > ids[index])
-                {
-                    card.cardFront = cardSprites[ids[index]];
-                }
-                allCards.Add(card);
+                if (savedStates[i].isFlipped) card.FlipCard();
+                if (savedStates[i].isMatched) card.SetMatched();
             }
+
+            card.cardButton.onClick.AddListener(() => OnCardClick(card));
+            allCards.Add(card);
         }
     }
 
@@ -113,66 +147,6 @@ public class CardSpawner : MonoBehaviour
             (ids[i], ids[j]) = (ids[j], ids[i]);
         }
         return ids;
-    }
-
-    public void LoadFromSave(GameSaveData saveData, Action<Card> OnCardClick)
-    {
-        ClearBoard();
-
-        gridWidth = saveData.gridWidth;
-        gridHeight = saveData.gridHeight;
-        int totalCards = gridWidth * gridHeight;
-
-        RectTransform parentRect = cardParent.GetComponent<RectTransform>();
-
-        float availableWidth = parentRect.rect.width;
-        float availableHeight = parentRect.rect.height;
-
-        float cardSize = Mathf.Min(
-            (availableWidth - spacing * (gridWidth - 1)) / gridWidth,
-            (availableHeight - spacing * (gridHeight - 1)) / gridHeight
-        );
-
-        float targetWidth = cardSize * gridWidth + spacing * (gridWidth - 1);
-        float targetHeight = cardSize * gridHeight + spacing * (gridHeight - 1);
-        parentRect.sizeDelta = new Vector2(targetWidth, targetHeight);
-
-        float startX = -targetWidth / 2f + cardSize / 2f;
-        float startY = targetHeight / 2f - cardSize / 2f;
-
-        for (int i = 0; i < saveData.cardStates.Count; i++)
-        {
-            int x = i % gridWidth;
-            int y = i / gridWidth;
-
-            GameObject obj = Instantiate(cardPrefab, cardParent);
-            RectTransform cardRect = obj.GetComponent<RectTransform>();
-
-            cardRect.sizeDelta = new Vector2(cardSize, cardSize);
-            cardRect.anchoredPosition = new Vector2(
-                startX + x * (cardSize + spacing),
-                startY - y * (cardSize + spacing)
-            );
-
-            CardState state = saveData.cardStates[i];
-            Card card = obj.GetComponent<Card>();
-            card.cardId = state.cardId;
-            card.cardButton.onClick.AddListener(() => OnCardClick(card));
-            card.cardIndex = i;
-            if (cardSprites != null && cardSprites.Length > state.cardId)
-            {
-                card.cardFront = cardSprites[state.cardId];
-            }
-            allCards.Add(card);
-            if (state.isFlipped)
-            {
-                card.FlipCard();
-            }
-            if(state.isMatched)
-            {
-                card.SetMatched();
-            }
-        }
     }
 
     public List<CardState> GetCardStates()
