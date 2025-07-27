@@ -60,24 +60,35 @@ public class Card : MonoBehaviour
 
     private IEnumerator FlipAnimation(Sprite toSprite)
     {
-        float elapsedTime = 0f;
+        float halfDuration = flipDuration / 2f;
+        float elapsed = 0f;
 
-        while (elapsedTime < flipDuration)
+        // First half: shrink X to 0
+        while (elapsed < halfDuration)
         {
-            elapsedTime += Time.deltaTime;
-            float progress = elapsedTime / flipDuration;
-            float curveValue = flipCurve.Evaluate(progress);
-
-            // Scale effect for flip animation
-            transform.localScale = new Vector3(1f - curveValue * 0.1f, 1f, 1f);
-
+            elapsed += Time.deltaTime;
+            float t = elapsed / halfDuration;
+            float scale = Mathf.Lerp(1f, 0f, flipCurve.Evaluate(t));
+            transform.localScale = new Vector3(scale, 1f, 1f);
             yield return null;
         }
 
-        // Change sprite at the middle of animation
+        // Change sprite at the midpoint
         cardImage.sprite = toSprite;
 
-        // Reset scale
+        elapsed = 0f;
+
+        // Second half: grow X from 0 to 1
+        while (elapsed < halfDuration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / halfDuration;
+            float scale = Mathf.Lerp(0f, 1f, flipCurve.Evaluate(t));
+            transform.localScale = new Vector3(scale, 1f, 1f);
+            yield return null;
+        }
+
+        // Final scale
         transform.localScale = Vector3.one;
     }
 
