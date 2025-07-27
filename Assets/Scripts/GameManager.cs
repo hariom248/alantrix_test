@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(card2.flipDuration + matchDelay);
 
-        if (card1.GetCardId() == card2.GetCardId())
+        if (card1.CardId == card2.CardId)
         {
             card1.SetMatched();
             card2.SetMatched();

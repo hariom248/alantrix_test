@@ -3675,6 +3675,7 @@ MonoBehaviour:
   cardSpawner: {fileID: 949825065}
   uiController: {fileID: 803257912}
   audioManager: {fileID: 297252901}
+  matchDelay: 1
 --- !u!1 &2091702784
 GameObject:
   m_ObjectHideFlags: 0

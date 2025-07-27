@@ -7,8 +7,7 @@ public struct CardState
 {
     public int spriteIndex;
     public int cardId;
-    public bool isMatched;
-    public bool isFlipped;
+    public CardVisualState cardVisualState;
 }
 
 [System.Serializable]

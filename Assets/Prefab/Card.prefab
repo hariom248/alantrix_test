@@ -137,7 +137,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cardIndex: 0
-  cardId: 0
   cardFront: {fileID: 10915, guid: 0000000000000000f000000000000000, type: 0}
   cardBack: {fileID: 21300000, guid: eebafe8cb312629459986a5546ac1464, type: 3}
   cardImage: {fileID: 401118314751439528}

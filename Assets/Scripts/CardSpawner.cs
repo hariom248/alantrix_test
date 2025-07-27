@@ -16,10 +16,11 @@ public class CardSpawner : MonoBehaviour
 
     private int gridWidth;
     private int gridHeight;
-    private List<Card> allCards = new List<Card>();
 
     public int GridWidth => gridWidth;
     public int GridHeight => gridHeight;
+
+    public List<Card> AllCards { get; set; } = new List<Card>();
 
     private int availableWidth;
     private int availableHeight;
@@ -106,22 +107,22 @@ public class CardSpawner : MonoBehaviour
             );
 
             Card card = obj.GetComponent<Card>();
-            card.cardIndex = i;
 
             int id = savedStates == null ? ids[i] : savedStates[i].cardId;
-            card.cardId = id;
+            card.CardId = id;
 
-            if (cardSprites != null && cardSprites.Length > id)
-                card.cardFront = cardSprites[id];
-
-            if (savedStates != null)
+            if (cardSprites.Length > id)
             {
-                if (savedStates[i].isFlipped) card.FlipCard();
-                if (savedStates[i].isMatched) card.SetMatched();
+                card.cardFront = cardSprites[id];
+            }
+
+            if (savedStates != null && savedStates[i].cardVisualState == CardVisualState.Matched)
+            {
+                card.SetMatched();
             }
 
             card.cardButton.onClick.AddListener(() => OnCardClick(card));
-            allCards.Add(card);
+            AllCards.Add(card);
         }
     }
 
@@ -130,7 +131,7 @@ public class CardSpawner : MonoBehaviour
         foreach (Transform child in cardParent)
             Destroy(child.gameObject);
 
-        allCards.Clear();
+        AllCards.Clear();
     }
 
     List<int> GenerateShuffledIds(int total)
@@ -152,13 +153,12 @@ public class CardSpawner : MonoBehaviour
     public List<CardState> GetCardStates()
     {
         var states = new List<CardState>();
-        foreach (var card in allCards)
+        foreach (var card in AllCards)
         {
             states.Add(new CardState
             {
-                cardId = card.cardId,
-                isFlipped = card.IsFlipped(),
-                isMatched = card.IsMatched(),
+                cardId = card.CardId,
+                cardVisualState = card.VisualState
             });
         }
         return states;

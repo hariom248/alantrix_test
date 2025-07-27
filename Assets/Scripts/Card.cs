@@ -2,11 +2,18 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
+[System.Serializable]
+public enum CardVisualState
+{
+    Hidden,
+    Flipped,
+    Matched
+}
+
+
 public class Card : MonoBehaviour
 {
     [Header("Card Settings")]
-    public int cardIndex;
-    public int cardId;
     public Sprite cardFront;
     public Sprite cardBack;
 
@@ -17,11 +24,11 @@ public class Card : MonoBehaviour
     [Header("Animation Settings")]
     public float flipDuration = 0.3f;
     public AnimationCurve flipCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
-
-    private bool isFlipped = false;
-    private bool isMatched = false;
     private bool isFlipping = false;
 
+    public CardVisualState VisualState { get; private set; }
+
+    public int CardId { get; set; }
 
     void Start()
     {
@@ -29,7 +36,7 @@ public class Card : MonoBehaviour
         cardImage.sprite = cardBack;
     }
 
-    public bool CanClick() => !isFlipping && !isMatched && !isFlipped;
+    public bool CanClick() => !isFlipping && VisualState == CardVisualState.Hidden;
 
     public void FlipCard()
     {
@@ -43,15 +50,15 @@ public class Card : MonoBehaviour
         isFlipping = true;
 
         // Flip to show front
-        if (!isFlipped)
+        if (VisualState == CardVisualState.Hidden)
         {
             yield return StartCoroutine(FlipAnimation(cardFront));
-            isFlipped = true;
+            VisualState = CardVisualState.Flipped;
         }
         else
         {
             yield return StartCoroutine(FlipAnimation(cardBack));
-            isFlipped = false;
+            VisualState = CardVisualState.Hidden;
         }
 
         isFlipping = false;
@@ -93,9 +100,8 @@ public class Card : MonoBehaviour
 
     public void SetMatched()
     {
-        isMatched = true;
+        VisualState = CardVisualState.Matched;
         cardButton.interactable = false;
-
         // Visual feedback for matched cards
         StartCoroutine(MatchedAnimation());
     }
@@ -125,9 +131,7 @@ public class Card : MonoBehaviour
             cardImage.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
             yield return null;
         }
+        
+        cardImage.sprite = cardFront;
     }
-
-    public int GetCardId() => cardId;
-    public bool IsFlipped() => isFlipped;
-    public bool IsMatched() => isMatched;
 }
