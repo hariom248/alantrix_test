@@ -1,6 +1,9 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// Manages the game logic for card matching.
+/// </summary>
 public class GameLogicManager : MonoBehaviour
 {
     [Header("Game Settings")]

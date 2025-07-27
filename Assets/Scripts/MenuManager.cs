@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Manages the main menu and game over UI.
+/// </summary>
 public class MenuManager : MonoBehaviour
 {
     [Header("UI Panels")]
@@ -27,10 +30,10 @@ public class MenuManager : MonoBehaviour
     public AudioManager audioManager;
     public GameDataManager gameDataManager;
     public GameSetupManager gameSetupManager;
-    
+
     [Header("Grid Settings")]
     private GridSize gridSize = new GridSize(4, 3); // Default grid size
-    
+
     private GameSaveData currentSaveData;
 
     private void Start()
@@ -65,7 +68,7 @@ public class MenuManager : MonoBehaviour
 
             playNewGameButton.interactable = gridSize.width > 0 && gridSize.height > 0 && gridSize.width * gridSize.height % 2 == 0;
         });
-        
+
         gridWidthSlider.value = gridSize.width;
         gridHeightSlider.value = gridSize.height;
     }
@@ -80,7 +83,7 @@ public class MenuManager : MonoBehaviour
         gameDataManager.TryLoad(out currentSaveData);
         playLoadGameButton.interactable = currentSaveData != null;
         var currentGameState = gameSetupManager.GetCurrentGameState();
-        bool gameInProgress = currentGameState != null && currentGameState.gridSize.width > 0 &&  currentGameState.gridSize.height > 0;
+        bool gameInProgress = currentGameState != null && currentGameState.gridSize.width > 0 && currentGameState.gridSize.height > 0;
         saveGameButton.interactable = gameInProgress;
         resumeGameButton.interactable = gameInProgress;
         backgroundImage.enabled = true;

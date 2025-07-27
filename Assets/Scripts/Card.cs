@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,23 +10,26 @@ public enum CardVisualState
     Matched
 }
 
+/// <summary>
+/// Represents a card in the game.
+/// </summary>
 public class Card : MonoBehaviour
 {
     [Header("Card Settings")]
     public Sprite cardFront;
     public Sprite cardBack;
-    
+
     [Header("UI References")]
     public Image cardImage;
     public Button cardButton;
-    
+
     [Header("Animation Settings")]
     public float flipDuration = 0.3f;
     public AnimationCurve flipCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
-    
+
     public CardVisualState VisualState { get; private set; }
     public int CardId { get; set; }
-    
+
     private bool isFlipping = false;
 
     private void Start()

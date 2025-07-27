@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Manages the game progress, including score, moves, and matched pairs.
+/// </summary>
 public class GameProgressManager : MonoBehaviour
 {
     [Header("UI References")]
@@ -14,12 +17,12 @@ public class GameProgressManager : MonoBehaviour
     [Header("Score Settings")]
     public int baseMatchPoints = 100;
     public int comboIncrement = 50;
-    
+
     public int Score { get; private set; }
     public int Moves { get; private set; }
     public int MatchedPairs { get; private set; }
     public int ComboMultiplier { get; private set; } = 0;
-    
+
     private int totalPairs;
 
     private void Start()

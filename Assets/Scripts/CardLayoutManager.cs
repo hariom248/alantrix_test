@@ -15,6 +15,9 @@ public struct GridSize
     }
 }
 
+/// <summary>
+/// Manages the layout and of generated cards in the game.
+/// </summary>
 public class CardLayoutManager : MonoBehaviour
 {
     [Header("Layout Settings")]

@@ -1,6 +1,9 @@
 
 using UnityEngine;
 
+/// <summary>
+/// Manages the setup and initialization of the game.
+/// </summary>
 public class GameSetupManager : MonoBehaviour
 {
     [Header("Manager References")]

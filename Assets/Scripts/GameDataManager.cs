@@ -20,6 +20,10 @@ public class GameSaveData
     public List<CardState> cardStates;
 }
 
+/// <summary>
+/// Manages saving and loading game data.
+/// This class handles serialization and deserialization of game state to PlayerPrefs.
+/// </summary>
 public class GameDataManager
 {
     private const string SaveKey = "SaveData";
@@ -43,7 +47,7 @@ public class GameDataManager
         data = JsonUtility.FromJson<GameSaveData>(json);
         return true;
     }
-    
+
     public void ClearSave()
     {
         PlayerPrefs.DeleteKey(SaveKey);
