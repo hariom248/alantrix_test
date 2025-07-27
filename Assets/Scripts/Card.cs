@@ -45,6 +45,17 @@ public class Card : MonoBehaviour
         StartCoroutine(FlipCardCoroutine());
     }
 
+    public void FlipAndMatched()
+    {
+        StartCoroutine(FlipAndMatchCoroutine());
+    }
+
+    private IEnumerator FlipAndMatchCoroutine()
+    {
+        yield return StartCoroutine(FlipCardCoroutine());
+        SetMatched();
+    }
+
     private IEnumerator FlipCardCoroutine()
     {
         isFlipping = true;
@@ -131,7 +142,5 @@ public class Card : MonoBehaviour
             cardImage.color = new Color(originalColor.r, originalColor.g, originalColor.b, alpha);
             yield return null;
         }
-        
-        cardImage.sprite = cardFront;
     }
 }

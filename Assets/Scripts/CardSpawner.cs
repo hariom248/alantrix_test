@@ -118,7 +118,7 @@ public class CardSpawner : MonoBehaviour
 
             if (savedStates != null && savedStates[i].cardVisualState == CardVisualState.Matched)
             {
-                card.SetMatched();
+                card.FlipAndMatched();
             }
 
             card.cardButton.onClick.AddListener(() => OnCardClick(card));
