@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     public CardSpawner cardSpawner;
     public UIController uiController;
     public AudioManager audioManager;
+    public float matchDelay = 1f;
 
 
     [ContextMenu("Initialize Game")]
@@ -64,7 +65,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator CheckPairMatch(Card card1, Card card2)
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(card2.flipDuration + matchDelay);
 
         if (card1.GetCardId() == card2.GetCardId())
         {
