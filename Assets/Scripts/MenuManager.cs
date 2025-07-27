@@ -26,7 +26,7 @@ public class MenuManager : MonoBehaviour
     [Header("Manager References")]
     public AudioManager audioManager;
     public GameDataManager gameDataManager;
-    public GameManager gameManager;
+    public GameSetupManager gameSetupManager;
     
     [Header("Grid Settings")]
     private GridSize gridSize = new GridSize(4, 3); // Default grid size
@@ -79,7 +79,7 @@ public class MenuManager : MonoBehaviour
     {
         gameDataManager.TryLoad(out currentSaveData);
         playLoadGameButton.interactable = currentSaveData != null;
-        var currentGameState = gameManager.GetCurrentGameState();
+        var currentGameState = gameSetupManager.GetCurrentGameState();
         bool gameInProgress = currentGameState != null && currentGameState.gridSize.width > 0 &&  currentGameState.gridSize.height > 0;
         saveGameButton.interactable = gameInProgress;
         resumeGameButton.interactable = gameInProgress;
@@ -89,19 +89,19 @@ public class MenuManager : MonoBehaviour
     private void StartGame()
     {
         HideAllPanels();
-        gameManager.StartNewGame(gridSize);
+        gameSetupManager.StartNewGame(gridSize);
     }
 
     private void LoadGame()
     {
         HideAllPanels();
-        gameManager.LoadGame(currentSaveData);
+        gameSetupManager.LoadGame(currentSaveData);
     }
 
     private void SaveGame()
     {
         HideAllPanels();
-        gameDataManager.Save(gameManager.GetCurrentGameState());
+        gameDataManager.Save(gameSetupManager.GetCurrentGameState());
     }
 
     private void PlayButtonSound()

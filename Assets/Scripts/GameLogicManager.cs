@@ -1,52 +1,16 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour
+public class GameLogicManager : MonoBehaviour
 {
     [Header("Game Settings")]
     public float matchDelay = 1f;
 
     [Header("Manager References")]
-    public CardLayoutManager cardLayoutManager;
-    public GameUIManager gameUIManager;
+    public GameProgressManager gameProgressManager;
     public AudioManager audioManager;
 
-    private GridSize gridSize;
     private Card lastFlippedCard = null;
-
-
-    public void StartNewGame(GridSize gridSize)
-    {
-        this.gridSize = gridSize;
-        cardLayoutManager.GenerateBoard(gridSize, OnCardClicked);
-        gameUIManager.Initialize(GetTotalPairs());
-    }
-
-    public void LoadGame(GameSaveData data)
-    {
-        this.gridSize = data.gridSize;
-        cardLayoutManager.LoadFromSave(data, OnCardClicked);
-        gameUIManager.LoadUI(data, GetTotalPairs());
-    }
-
-    private int GetTotalPairs()
-    {
-        return gridSize.width * gridSize.height / 2;
-    }
-
-    public GameSaveData GetCurrentGameState()
-    {
-        return new GameSaveData
-        {
-            gridSize = gridSize,
-            cardStates = cardLayoutManager.GetCardStates(),
-            score = gameUIManager.Score,
-            moves = gameUIManager.Moves,
-            matchedPairs = gameUIManager.MatchedPairs,
-            comboMultiplier = gameUIManager.ComboMultiplier
-        };
-    }
 
     public void OnCardClicked(Card card)
     {
@@ -62,7 +26,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            gameUIManager.RegisterMove();
+            gameProgressManager.RegisterMove();
 
             // Copy to local vars to avoid race conditions
             Card first = lastFlippedCard;
@@ -81,19 +45,19 @@ public class GameManager : MonoBehaviour
         {
             card1.SetMatched();
             card2.SetMatched();
-            gameUIManager.RegisterMatch();
+            gameProgressManager.RegisterMatch();
             audioManager.PlayCardMatchSound();
 
-            if (gameUIManager.IsGameComplete())
+            if (gameProgressManager.IsGameComplete())
             {
                 yield return new WaitForSeconds(1f);
                 audioManager.PlayGameCompleteSound();
-                gameUIManager.ShowGameCompletePanel();
+                gameProgressManager.ShowGameCompletePanel();
             }
         }
         else
         {
-            gameUIManager.RegisterMismatch();
+            gameProgressManager.RegisterMismatch();
             audioManager.PlayCardMismatchSound();
 
             card1.FlipCard();
