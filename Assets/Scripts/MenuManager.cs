@@ -68,6 +68,8 @@ public class MenuManager : MonoBehaviour
     {
         gameDataManager.TryLoad(out currentSaveData);
         playLoadGameButton.interactable = currentSaveData != null;
+        var currentGameState = gameManager.GetCurrentGameState();
+        saveGameButton.interactable = currentGameState != null && currentGameState.gridWidth > 0 && currentGameState.gridHeight > 0 && !gameManager.uiController.IsGameComplete();
         backgroundImage.enabled = true;
     }
 
